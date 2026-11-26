@@ -26,6 +26,10 @@ pipeline {
         stage('3. Frontend (CI)') {
             steps {
                 dir('frontend') {
+                    powershell '''
+                        Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+                        Start-Sleep -Seconds 2
+                    '''
                     bat '''
                         npm ci
                         npm run build
