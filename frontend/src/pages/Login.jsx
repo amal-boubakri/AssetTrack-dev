@@ -60,7 +60,7 @@ export default function Login() {
         </div>
 
         <h2>Bienvenue MERN</h2>
-        <p className="subtitle">Connectez-vous à votre espace.</p>
+        <p className="subtitle">Connectez-Vous à Votre Espace.</p>
 
         <form onSubmit={handleLogin}>
           <label>ID</label>
