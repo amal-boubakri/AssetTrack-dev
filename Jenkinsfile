@@ -44,7 +44,7 @@ pipeline {
 
                     Start-Sleep -Seconds 2
 
-                    # 2. Copie le fichier .env local dans le workspace Jenkins (car .env est ignore par Git)
+                    # 2. Copie le fichier .env local dans le workspace Jenkins
                     $localEnv = "C:\\Users\\DELL\\Documents\\AssetTrack-dev\\backend\\.env"
                     $targetEnv = "$pwd\\backend\\.env"
                     if (Test-Path $localEnv) {
@@ -54,21 +54,9 @@ pipeline {
                         Write-Warning "Attention : $localEnv introuvable."
                     }
 
-                    # 3. Demarre le Backend en arriere-plan avec redirection des logs
-                    Start-Process -FilePath "node.exe" `
-                        -ArgumentList "server.js" `
-                        -WorkingDirectory "$pwd\\backend" `
-                        -RedirectStandardOutput "$pwd\\backend\\backend.log" `
-                        -RedirectStandardError "$pwd\\backend\\backend-error.log" `
-                        -WindowStyle Hidden
-
-                    # 4. Demarre le Frontend en arriere-plan avec redirection des logs
-                    Start-Process -FilePath "npm.cmd" `
-                        -ArgumentList "run", "dev", "--", "--host" `
-                        -WorkingDirectory "$pwd\\frontend" `
-                        -RedirectStandardOutput "$pwd\\frontend\\frontend.log" `
-                        -RedirectStandardError "$pwd\\frontend\\frontend-error.log" `
-                        -WindowStyle Hidden
+                    # 3. Demarre le Backend et le Frontend en arriere-plan sans bloquer Jenkins
+                    cmd /c "cd /d $pwd\\backend && start /b node server.js > backend.log 2>&1"
+                    cmd /c "cd /d $pwd\\frontend && start /b npm run dev -- --host > frontend.log 2>&1"
 
                     Start-Sleep -Seconds 4
                     Write-Output "Backend et Frontend demarres en arriere-plan."
