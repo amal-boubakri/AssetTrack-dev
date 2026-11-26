@@ -37,9 +37,12 @@ pipeline {
         stage('4. Deploy (Backend + Frontend)') {
             steps {
                 powershell '''
-                    # 1. Arrete les anciens processus Node/Vite lies au projet
-                    Get-CimInstance Win32_Process -Filter "Name = 'node.exe'" |
-                        Where-Object { $_.CommandLine -like "*AssetTrack-dev-CI*" -or $_.CommandLine -like "*server.js*" -or $_.CommandLine -like "*vite*" } |
+                    # 1. Arrete uniquement les anciens processus lies a AssetTrack-dev-CI
+                    Get-CimInstance Win32_Process |
+                        Where-Object {
+                            ($_.Name -eq 'node.exe' -or $_.Name -eq 'cmd.exe') -and
+                            ($_.CommandLine -like "*AssetTrack-dev-CI*" -or $_.CommandLine -like "*start-backend.bat*" -or $_.CommandLine -like "*start-frontend.bat*")
+                        } |
                         ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
 
                     Start-Sleep -Seconds 2
@@ -54,11 +57,11 @@ pipeline {
                         Write-Warning "Attention : $localEnv introuvable."
                     }
 
-                    # 3. Lance le Backend et le Frontend via taches planifiees (independantes de Jenkins)
+                    # 3. Lance le Backend et le Frontend via taches planifiees
                     schtasks /Run /TN "AssetTrack-Backend"
                     schtasks /Run /TN "AssetTrack-Frontend"
 
-                    Start-Sleep -Seconds 4
+                    Start-Sleep -Seconds 5
                     Write-Output "Taches AssetTrack-Backend et AssetTrack-Frontend declenchees."
                 '''
             }
