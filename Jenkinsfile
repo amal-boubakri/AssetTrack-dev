@@ -55,8 +55,15 @@ pipeline {
                     }
 
                     # 3. Demarre le Backend et le Frontend en arriere-plan sans bloquer Jenkins
-                    cmd /c "cd /d $pwd\\backend && start /b node server.js > backend.log 2>&1"
-                    cmd /c "cd /d $pwd\\frontend && start /b npm run dev -- --host > frontend.log 2>&1"
+                    Start-Process -FilePath "cmd.exe" `
+                        -ArgumentList "/c", "node server.js > backend.log 2>&1" `
+                        -WorkingDirectory "$pwd\\backend" `
+                        -WindowStyle Hidden
+
+                    Start-Process -FilePath "cmd.exe" `
+                        -ArgumentList "/c", "npm run dev -- --host > frontend.log 2>&1" `
+                        -WorkingDirectory "$pwd\\frontend" `
+                        -WindowStyle Hidden
 
                     Start-Sleep -Seconds 4
                     Write-Output "Backend et Frontend demarres en arriere-plan."
