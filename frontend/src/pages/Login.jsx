@@ -63,7 +63,7 @@ export default function Login() {
         <p className="subtitle">Connectez-vous à votre espace.</p>
 
         <form onSubmit={handleLogin}>
-          <label>Matricule</label>
+          <label>ID</label>
           <input
             type="text"
             value={matricule}
