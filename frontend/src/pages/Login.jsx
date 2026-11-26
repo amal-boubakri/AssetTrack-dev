@@ -59,7 +59,7 @@ export default function Login() {
           <p>Gestion du parc informatique</p>
         </div>
 
-        <h2>Bienvenue</h2>
+        <h2>BienvenueAmalsysn</h2>
         <p className="subtitle">Connectez-vous à votre espace.</p>
 
         <form onSubmit={handleLogin}>
